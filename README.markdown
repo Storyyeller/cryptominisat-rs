@@ -31,7 +31,7 @@ fn main() {
 }
 ```
 
-Variables are indexed by unsigned integers 0...n-1. A literal represents either a variable or a negatved variable. A clause is a set of literals, at least one of which must be true in the final solution. For convience, new_var() both adds a variable and returns a literal representing the new variable. However, you can manually create literals and clauses if you want to. The above code is syntactic sugar for the following.
+Variables are indexed by unsigned integers 0...n-1. A literal represents either a variable or a negated variable. A clause is a set of literals, at least one of which must be true in the final solution. For convience, new_var() both adds a variable and returns a literal representing the new variable. However, you can manually create literals and clauses if you want to. The above code is syntactic sugar for the following.
 
 ```
     let mut solver = Solver::new();
