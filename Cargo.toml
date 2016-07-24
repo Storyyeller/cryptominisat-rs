@@ -5,6 +5,20 @@ authors = ["Robert Grosse <n210241048576@gmail.com>"]
 links = "cryptominisat5"
 build = "build.rs"
 license = "LGPL-2.1/MIT"
+readme = "README.markdown"
+repository = "https://github.com/storyyeller/cryptominisat-rs"
+description = "Rust bindings for Cryptominisat, a boolean satisfiability solver"
+keywords = ["SAT"]
+
+exclude = [
+    "cryptominisat/debian/*",
+    "cryptominisat/docs/*",
+    "cryptominisat/scripts/*",
+    "cryptominisat/tests/*",
+    "cryptominisat/utils/*",
+    "cryptominisat/web/*",
+]
+
 
 [dependencies]
 libc = "0.2.0"
