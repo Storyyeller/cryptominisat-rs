@@ -13,6 +13,6 @@ fn main() {
     let mut solver = Solver::new();
     // this will abort
     solver.set_num_threads(0);
-    solver.new_vars(1<<31);
+    solver.new_vars(1 << 31);
     solver.solve();
 }

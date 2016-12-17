@@ -9,7 +9,9 @@
 extern crate cryptominisat;
 use cryptominisat::*;
 
-fn new_lit(var: u32, neg: bool) -> Lit { Lit::new(var, neg).unwrap() }
+fn new_lit(var: u32, neg: bool) -> Lit {
+    Lit::new(var, neg).unwrap()
+}
 
 #[test]
 fn readme_code() {
