@@ -122,4 +122,4 @@ Cryptominisat handles errors by writing a message to stderr and then aborting. I
 
 License
 -----
-The Rust wrappers are under the MIT license, but Cryptominisat itself (the C++ part) uses LGPL v2.1. If you want to distribute this with a closed-source application, you should link the C++ library dynamically.
+MIT
