@@ -14,6 +14,7 @@ fn main() {
   let dst = Config::new("cryptominisat")
                    .define("CMAKE_BUILD_TYPE", "Release")
                    .define("STATICCOMPILE", "ON")
+                   .define("ENABLE_PYTHON_INTERFACE", "OFF")
                    .define("ONLY_SIMPLE", "ON")
                    .define("NOZLIB", "ON")
                    .define("NOM4RI", "ON")
