@@ -83,6 +83,7 @@ extern "C" {
                                     -> Lbool;
     fn cmsat_get_model(this: *const SATSolver) -> slice_from_c<Lbool>;
     fn cmsat_get_conflict(this: *const SATSolver) -> slice_from_c<Lit>;
+    fn cmsat_set_verbosity(this: *mut SATSolver, n: u32);
     fn cmsat_set_num_threads(this: *mut SATSolver, n: u32);
 }
 
@@ -133,6 +134,11 @@ impl Solver {
     /// Set number of threads used for solving. Must not be called after other methods.
     pub fn set_num_threads(&mut self, n: u32) {
         unsafe { cmsat_set_num_threads(self.0, n) }
+    }
+
+    /// Set verbosity
+    pub fn set_verbosity(&mut self, n: u32) {
+        unsafe { cmsat_set_verbosity(self.0, n) }
     }
 
     /// Helper that adds a variable and returns the corresponding literal.
