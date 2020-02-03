@@ -85,6 +85,12 @@ extern "C" {
     fn cmsat_get_conflict(this: *const SATSolver) -> slice_from_c<Lit>;
     fn cmsat_set_verbosity(this: *mut SATSolver, n: u32);
     fn cmsat_set_num_threads(this: *mut SATSolver, n: u32);
+    fn cmsat_set_default_polarity(this: *mut SATSolver, polar: bool);
+    fn cmsat_set_no_simplify(this: *mut SATSolver);
+    fn cmsat_set_no_simplify_at_startup(this: *mut SATSolver);
+    fn cmsat_set_no_equivalent_lit_replacement(this: *mut SATSolver);
+    fn cmsat_set_no_bva(this: *mut SATSolver);
+    fn cmsat_set_no_bve(this: *mut SATSolver);
 }
 
 pub struct Solver(*mut SATSolver);
@@ -159,5 +165,24 @@ impl Solver {
             rhs ^= lit.isneg();
         }
         self.add_xor_clause(&vars, rhs)
+    }
+
+    pub fn set_default_polarity(&mut self, polar: bool) {
+        unsafe { cmsat_set_default_polarity(self.0, polar) }
+    }
+    pub fn set_no_simplify(&mut self) {
+        unsafe { cmsat_set_no_simplify(self.0) }
+    }
+    pub fn set_no_simplify_at_startup(&mut self) {
+        unsafe { cmsat_set_no_simplify_at_startup(self.0) }
+    }
+    pub fn set_no_equivalent_lit_replacement(&mut self) {
+        unsafe { cmsat_set_no_equivalent_lit_replacement(self.0) }
+    }
+    pub fn set_no_bva(&mut self) {
+        unsafe { cmsat_set_no_bva(self.0) }
+    }
+    pub fn set_no_bve(&mut self) {
+        unsafe { cmsat_set_no_bve(self.0) }
     }
 }
