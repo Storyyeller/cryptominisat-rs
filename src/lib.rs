@@ -81,6 +81,10 @@ extern "C" {
                                     assumptions: *const Lit,
                                     num_assumptions: size_t)
                                     -> Lbool;
+    fn cmsat_simplify(this: *mut SATSolver,
+                                    assumptions: *const Lit,
+                                    num_assumptions: size_t)
+                                    -> Lbool;
     fn cmsat_get_model(this: *const SATSolver) -> slice_from_c<Lbool>;
     fn cmsat_get_conflict(this: *const SATSolver) -> slice_from_c<Lit>;
     fn cmsat_set_verbosity(this: *mut SATSolver, n: u32);
@@ -184,5 +188,8 @@ impl Solver {
     }
     pub fn set_no_bve(&mut self) {
         unsafe { cmsat_set_no_bve(self.0) }
+    }
+    pub fn simplify(&mut self, assumptions: &[Lit]) -> Lbool {
+        unsafe { cmsat_simplify(self.0, assumptions.as_ptr(), assumptions.len()) }
     }
 }
