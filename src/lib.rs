@@ -95,6 +95,7 @@ extern "C" {
     fn cmsat_set_no_equivalent_lit_replacement(this: *mut SATSolver);
     fn cmsat_set_no_bva(this: *mut SATSolver);
     fn cmsat_set_no_bve(this: *mut SATSolver);
+    fn cmsat_set_yes_comphandler(this: *mut SATSolver);
 }
 
 pub struct Solver(*mut SATSolver);
@@ -189,6 +190,11 @@ impl Solver {
     pub fn set_no_bve(&mut self) {
         unsafe { cmsat_set_no_bve(self.0) }
     }
+
+    pub fn set_yes_comphandler(&mut self) {
+        unsafe { cmsat_set_yes_comphandler(self.0) }
+    }
+
     pub fn simplify(&mut self, assumptions: &[Lit]) -> Lbool {
         unsafe { cmsat_simplify(self.0, assumptions.as_ptr(), assumptions.len()) }
     }
