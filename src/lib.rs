@@ -17,7 +17,7 @@ pub const MAX_NUM_VARS: size_t = (1 << 28) - 1;
 enum SATSolver {} // opaque pointer
 
 #[repr(C)]
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug)]
 pub struct Lit(u32);
 impl Lit {
     /// Returns None if var >= 1 << 31, but you should not rely on var >= MAX_NUM_VARS
@@ -46,7 +46,7 @@ impl std::ops::Not for Lit {
 }
 
 #[repr(u8)]
-#[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Lbool {
     True = 0,
     False = 1,
@@ -96,6 +96,7 @@ extern "C" {
     fn cmsat_set_no_bva(this: *mut SATSolver);
     fn cmsat_set_no_bve(this: *mut SATSolver);
     fn cmsat_set_yes_comphandler(this: *mut SATSolver);
+    fn cmsat_set_max_time(this: *mut SATSolver, max_time: f64);
 }
 
 pub struct Solver(*mut SATSolver);
@@ -170,6 +171,11 @@ impl Solver {
             rhs ^= lit.isneg();
         }
         self.add_xor_clause(&vars, rhs)
+    }
+
+     /// Set a limit on the running time
+    pub fn set_max_time(&mut self, max_time: f64) {
+        unsafe { cmsat_set_max_time(self.0, max_time) }
     }
 
     pub fn set_default_polarity(&mut self, polar: bool) {
