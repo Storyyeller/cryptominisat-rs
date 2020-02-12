@@ -17,7 +17,7 @@ pub const MAX_NUM_VARS: size_t = (1 << 28) - 1;
 enum SATSolver {} // opaque pointer
 
 #[repr(C)]
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug)]
 pub struct Lit(u32);
 impl Lit {
     /// Returns None if var >= 1 << 31, but you should not rely on var >= MAX_NUM_VARS
@@ -46,7 +46,7 @@ impl std::ops::Not for Lit {
 }
 
 #[repr(u8)]
-#[derive(PartialEq, Eq, Clone, Copy)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug)]
 pub enum Lbool {
     True = 0,
     False = 1,
@@ -81,9 +81,22 @@ extern "C" {
                                     assumptions: *const Lit,
                                     num_assumptions: size_t)
                                     -> Lbool;
+    fn cmsat_simplify(this: *mut SATSolver,
+                                    assumptions: *const Lit,
+                                    num_assumptions: size_t)
+                                    -> Lbool;
     fn cmsat_get_model(this: *const SATSolver) -> slice_from_c<Lbool>;
     fn cmsat_get_conflict(this: *const SATSolver) -> slice_from_c<Lit>;
+    fn cmsat_set_verbosity(this: *mut SATSolver, n: u32);
     fn cmsat_set_num_threads(this: *mut SATSolver, n: u32);
+    fn cmsat_set_default_polarity(this: *mut SATSolver, polar: bool);
+    fn cmsat_set_no_simplify(this: *mut SATSolver);
+    fn cmsat_set_no_simplify_at_startup(this: *mut SATSolver);
+    fn cmsat_set_no_equivalent_lit_replacement(this: *mut SATSolver);
+    fn cmsat_set_no_bva(this: *mut SATSolver);
+    fn cmsat_set_no_bve(this: *mut SATSolver);
+    fn cmsat_set_yes_comphandler(this: *mut SATSolver);
+    fn cmsat_set_max_time(this: *mut SATSolver, max_time: f64);
 }
 
 pub struct Solver(*mut SATSolver);
@@ -135,6 +148,11 @@ impl Solver {
         unsafe { cmsat_set_num_threads(self.0, n) }
     }
 
+    /// Set verbosity
+    pub fn set_verbosity(&mut self, n: u32) {
+        unsafe { cmsat_set_verbosity(self.0, n) }
+    }
+
     /// Helper that adds a variable and returns the corresponding literal.
     pub fn new_var(&mut self) -> Lit {
         let n = self.nvars();
@@ -153,5 +171,37 @@ impl Solver {
             rhs ^= lit.isneg();
         }
         self.add_xor_clause(&vars, rhs)
+    }
+
+     /// Set a limit on the running time
+    pub fn set_max_time(&mut self, max_time: f64) {
+        unsafe { cmsat_set_max_time(self.0, max_time) }
+    }
+
+    pub fn set_default_polarity(&mut self, polar: bool) {
+        unsafe { cmsat_set_default_polarity(self.0, polar) }
+    }
+    pub fn set_no_simplify(&mut self) {
+        unsafe { cmsat_set_no_simplify(self.0) }
+    }
+    pub fn set_no_simplify_at_startup(&mut self) {
+        unsafe { cmsat_set_no_simplify_at_startup(self.0) }
+    }
+    pub fn set_no_equivalent_lit_replacement(&mut self) {
+        unsafe { cmsat_set_no_equivalent_lit_replacement(self.0) }
+    }
+    pub fn set_no_bva(&mut self) {
+        unsafe { cmsat_set_no_bva(self.0) }
+    }
+    pub fn set_no_bve(&mut self) {
+        unsafe { cmsat_set_no_bve(self.0) }
+    }
+
+    pub fn set_yes_comphandler(&mut self) {
+        unsafe { cmsat_set_yes_comphandler(self.0) }
+    }
+
+    pub fn simplify(&mut self, assumptions: &[Lit]) -> Lbool {
+        unsafe { cmsat_simplify(self.0, assumptions.as_ptr(), assumptions.len()) }
     }
 }
